@@ -22,8 +22,6 @@ const server = http.createServer(app);
 //     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
 // }));
 
-const cors = require('cors');
-
 app.use(cors({
     origin: process.env.FRONTEND_URL, // ✅ Use environment variable
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
