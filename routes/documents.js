@@ -14,6 +14,7 @@ router.get('/', verifyToken, async (req, res) => {
     }
 });
 
+
 // Get a single document by ID
 router.get('/:id', verifyToken, async (req, res) => {
     try {
