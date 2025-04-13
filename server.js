@@ -13,22 +13,54 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:3000'; // Default to localhost if not set in .env
+// const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:3000'; // Default to localhost if not set in .env
 
+// // Configure CORS for HTTP requests
+// app.use(cors({
+//     origin: corsOrigin, // Dynamically set the origin
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+//     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
+// }));
+
+const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:3000'];
 // Configure CORS for HTTP requests
-app.use(cors({
-    origin: corsOrigin, // Dynamically set the origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
-}));
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
+
+
+// // Socket.io setup for real-time collaboration
+// const io = new Server(server, {
+//     cors: {
+//         origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Dynamically set the origin for socket.io
+//         methods: ['GET', 'POST']
+//     }
+// });
+
 
 // Socket.io setup for real-time collaboration
 const io = new Server(server, {
     cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Dynamically set the origin for socket.io
-        methods: ['GET', 'POST']
-    }
-});
+      origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS (Socket.io)'));
+        }
+      },
+      methods: ['GET', 'POST'],
+    },
+  });
+  
   
 // Middleware and routes
 app.use(express.json());
