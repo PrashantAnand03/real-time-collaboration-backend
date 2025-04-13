@@ -22,21 +22,26 @@ const server = http.createServer(app);
 //     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
 // }));
 
-const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:3000'];
-// Configure CORS for HTTP requests
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
+const allowedOrigins = [
+    'https://real-time-collaborative-web-app.vercel.app',
+  ];
+  
+  // Configure CORS for HTTP requests
+  const vercelPreviewPattern = /^https:\/\/real-time-collaborative-web-[\w-]+\.vercel\.app$/;
+  
+  const corsOptions = {
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
+        return callback(null, true);
+      }
       callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  };
+  
+  // Express CORS
 app.use(cors(corsOptions));
-
 
 // // Socket.io setup for real-time collaboration
 // const io = new Server(server, {
@@ -47,19 +52,11 @@ app.use(cors(corsOptions));
 // });
 
 
-// Socket.io setup for real-time collaboration
+// Socket.io CORS
 const io = new Server(server, {
-    cors: {
-      origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new Error('Not allowed by CORS (Socket.io)'));
-        }
-      },
-      methods: ['GET', 'POST'],
-    },
+    cors: corsOptions,
   });
+
   
   
 // Middleware and routes
