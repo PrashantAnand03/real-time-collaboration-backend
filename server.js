@@ -23,7 +23,7 @@ const server = http.createServer(app);
 // }));
 
 const allowedOrigins = [
-    process.env.FRONTEND_URL, // ✅ dynamically allow your production frontend
+    process.env.FRONTEND_URL, //  dynamically allow your production frontend
   ];
   
   const vercelPreviewPattern = /^https:\/\/real-time-collaboration-frontend-[\w-]+\.vercel\.app$/;
@@ -47,12 +47,12 @@ const allowedOrigins = [
 app.use(cors(corsOptions));
 
 // // Socket.io setup for real-time collaboration
-// const io = new Server(server, {
-//     cors: {
-//         origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Dynamically set the origin for socket.io
-//         methods: ['GET', 'POST']
-//     }
-// });
+const io = new Server(server, {
+    cors: {
+        origin: process.env.FRONTEND_URL, // Dynamically set the origin for socket.io
+        methods: ['GET', 'POST']
+    }
+});
 
 
 // // Socket.io CORS
@@ -61,13 +61,13 @@ app.use(cors(corsOptions));
 //   });
 
 // Socket.io CORS
-const io = require('socket.io')(server, {
-    cors: {
-        origin: process.env.FRONTEND_URL, // Use env variable
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
-});
+// const io = require('socket.io')(server, {
+//     cors: {
+//         origin: process.env.FRONTEND_URL, // Use env variable
+//         methods: ['GET', 'POST'],
+//         credentials: true
+//     }
+// });
 
   
 // Middleware and routes
