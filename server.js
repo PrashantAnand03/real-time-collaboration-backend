@@ -23,15 +23,18 @@ const server = http.createServer(app);
 // }));
 
 const allowedOrigins = [
-    'https://real-time-collaborative-web-app.vercel.app',
+    process.env.FRONTEND_URL, // ✅ dynamically allow your production frontend
   ];
   
-  // Configure CORS for HTTP requests
-  const vercelPreviewPattern = /^https:\/\/real-time-collaborative-web-[\w-]+\.vercel\.app$/;
+  const vercelPreviewPattern = /^https:\/\/real-time-collaboration-frontend-[\w-]+\.vercel\.app$/;
   
   const corsOptions = {
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
+      if (
+        !origin || 
+        allowedOrigins.includes(origin) || 
+        vercelPreviewPattern.test(origin)
+      ) {
         return callback(null, true);
       }
       callback(new Error('Not allowed by CORS'));
