@@ -22,35 +22,29 @@ const server = http.createServer(app);
 //     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
 // }));
 
-app.use(cors({
-    origin: process.env.FRONTEND_URL, // ✅ Use environment variable
+const allowedOrigins = [
+    process.env.FRONTEND_URL, // ✅ dynamically allow your production frontend
+  ];
+  
+  const vercelPreviewPattern = /^https:\/\/real-time-collaboration-frontend-[\w-]+\.vercel\.app$/;
+  
+  const corsOptions = {
+    origin: function (origin, callback) {
+      if (
+        !origin || 
+        allowedOrigins.includes(origin) || 
+        vercelPreviewPattern.test(origin)
+      ) {
+        return callback(null, true);
+      }
+      callback(new Error('Not allowed by CORS'));
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-}));
-
-// const allowedOrigins = [
-//     process.env.FRONTEND_URL, // ✅ dynamically allow your production frontend
-//   ];
-  
-//   const vercelPreviewPattern = /^https:\/\/real-time-collaboration-frontend-[\w-]+\.vercel\.app$/;
-  
-//   const corsOptions = {
-//     origin: function (origin, callback) {
-//       if (
-//         !origin || 
-//         allowedOrigins.includes(origin) || 
-//         vercelPreviewPattern.test(origin)
-//       ) {
-//         return callback(null, true);
-//       }
-//       callback(new Error('Not allowed by CORS'));
-//     },
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//   };
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  };
   
   // Express CORS
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 // // Socket.io setup for real-time collaboration
 // const io = new Server(server, {
@@ -69,7 +63,7 @@ app.use(cors({
 // Socket.io CORS
 const io = require('socket.io')(server, {
     cors: {
-        origin: process.env.FRONTEND_URL, // ✅ Use env variable
+        origin: process.env.FRONTEND_URL, // Use env variable
         methods: ['GET', 'POST'],
         credentials: true
     }
