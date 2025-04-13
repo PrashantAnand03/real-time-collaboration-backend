@@ -13,9 +13,11 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
+const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:3000'; // Default to localhost if not set in .env
+
 // Configure CORS for HTTP requests
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: corsOrigin, // Dynamically set the origin
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
 }));
@@ -23,7 +25,7 @@ app.use(cors({
 // Socket.io setup for real-time collaboration
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:3000', 
+        origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Dynamically set the origin for socket.io
         methods: ['GET', 'POST']
     }
 });
@@ -54,7 +56,7 @@ io.on('connection', (socket) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Backend is running');
+    res.send('Backend is running.....');
 });
 
 const PORT = process.env.PORT || 5000;
