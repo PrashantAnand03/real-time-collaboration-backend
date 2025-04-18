@@ -46,13 +46,31 @@ const allowedOrigins = [
   // Express CORS
 app.use(cors(corsOptions));
 
-// // Socket.io setup for real-time collaboration
+// Socket.io setup for real-time collaboration
 const io = new Server(server, {
-    cors: {
-        origin: process.env.FRONTEND_URL, // Dynamically set the origin for socket.io
-        methods: ['GET', 'POST']
-    }
+  cors: {
+    origin: function (origin, callback) {
+      if (
+        !origin || 
+        allowedOrigins.includes(origin) || 
+        vercelPreviewPattern.test(origin)
+      ) {
+        return callback(null, true);
+      }
+      callback(new Error('Not allowed by CORS'));
+    },
+    methods: ['GET', 'POST'],
+  }
 });
+
+
+// // Socket.io setup for real-time collaboration
+// const io = new Server(server, {
+//     cors: {
+//         origin: process.env.FRONTEND_URL, // Dynamically set the origin for socket.io
+//         methods: ['GET', 'POST']
+//     }
+// });
 
 
 // // Socket.io CORS
