@@ -42,10 +42,7 @@ router.get('/:id', verifyToken, async (req, res) => {
         if (!document) {
             return res.status(404).json({ message: 'Document not found' });
         }
-         // Broadcast deletion to all clients in the document room
-        req.app.get('io').to(req.params.id).emit('documentDeleted', req.params.id);
-        res.json({ message: 'Document deleted successfully' });
-        // res.json(document);
+        res.json(document);
     } catch (error) {
         console.error('Error fetching document:', error); // Log for debug
         res.status(500).json({ message: 'Server error' });
@@ -77,14 +74,6 @@ router.put('/:id', verifyToken, async (req, res) => {
             { title, content },
             { new: true }
         );
-        // Emit update to all sockets in the same room
-        const io = req.app.get('io');
-        if (io) {
-            io.to(req.params.id).emit('receiveUpdate', {
-                title: updatedDocument.title,
-                content: updatedDocument.content,
-            });
-        }
         res.json(updatedDocument);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -95,15 +84,6 @@ router.put('/:id', verifyToken, async (req, res) => {
 router.delete('/:id', verifyToken, async (req, res) => {
     try {
         await Document.findByIdAndDelete(req.params.id);
-        if (!deletedDocument) {
-            return res.status(404).json({ message: 'Document not found' });
-        }
-
-        // Emit deletion to all users in the room
-        const io = req.app.get('io');
-        if (io) {
-            io.to(req.params.id).emit('documentDeleted', req.params.id);
-        }
         res.json({ message: 'Document deleted' });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
