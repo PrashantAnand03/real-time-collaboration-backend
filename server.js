@@ -47,14 +47,27 @@ const allowedOrigins = [
 app.use(cors(corsOptions));
 
 // Socket.io setup for real-time collaboration
+// const io = new Server(server, {
+//   cors: {
+//     origin: function (origin, callback) {
+//       if (
+//         !origin || 
+//         allowedOrigins.includes(origin) || 
+//         vercelPreviewPattern.test(origin)
+//       ) {
+//         return callback(null, true);
+//       }
+//       callback(new Error('Not allowed by CORS'));
+//     },
+//     methods: ['GET', 'POST'],
+//   }
+// });
+
 const io = new Server(server, {
   cors: {
-    origin: function (origin, callback) {
-      if (
-        !origin || 
-        allowedOrigins.includes(origin) || 
-        vercelPreviewPattern.test(origin)
-      ) {
+    origin: (origin, callback) => {
+      console.log('Origin:', origin);  // Add logging here for debugging
+      if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
         return callback(null, true);
       }
       callback(new Error('Not allowed by CORS'));
@@ -62,6 +75,7 @@ const io = new Server(server, {
     methods: ['GET', 'POST'],
   }
 });
+
 
 
 // // Socket.io setup for real-time collaboration

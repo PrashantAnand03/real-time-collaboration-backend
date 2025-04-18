@@ -4,15 +4,29 @@ const { verifyToken } = require('../middleware/auth');
 const router = express.Router();
 
 // Get all documents for the logged-in user
-router.get('/', verifyToken, async (req, res) => {
+// router.get('/', verifyToken, async (req, res) => {
+//     try {
+//         //const documents = await Document.find({ owner: req.user.id });
+//         const documents = await Document.find({});
+//         res.json(documents);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server error' });
+//     }
+// });
+
+router.get('/:id', verifyToken, async (req, res) => {
     try {
-        //const documents = await Document.find({ owner: req.user.id });
-        const documents = await Document.find({});
-        res.json(documents);
+        const document = await Document.findById(req.params.id);
+        if (!document) {
+            return res.status(404).json({ message: 'Document not found' });
+        }
+        res.json(document);
     } catch (error) {
+        console.error('Error fetching document:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 
 // Get a single document by ID
@@ -35,7 +49,7 @@ router.get('/', verifyToken, async (req, res) => {
 
 
 
-// ✅ Base path is '/api/documents'
+// Base path is '/api/documents'
 router.get('/:id', verifyToken, async (req, res) => {
     try {
         const document = await Document.findById(req.params.id);
