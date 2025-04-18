@@ -93,6 +93,12 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 
+// Default route
+app.get('/', (req, res) => {
+  res.send('Backend is running.....');
+});
+
+
 //connection happens when a io called made from socket.io client
 io.on('connection', (socket) => {
     console.log('New WebSocket connection');

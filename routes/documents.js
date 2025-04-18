@@ -16,21 +16,39 @@ router.get('/', verifyToken, async (req, res) => {
 
 
 // Get a single document by ID
+// router.get('/:id', verifyToken, async (req, res) => {
+//     try {
+//         const document = await Document.findById(req.params.id);
+//         if (!document) {
+//             return res.status(404).json({ message: 'Document not found' });
+//         }
+//         // if (document.owner.toString() !== req.user.id) {
+//         //     return res.status(403).json({ message: 'Not authorized' });
+//         // }
+//         res.json(document);
+//     } catch (error) {
+//         console.error('Error fetching document:', error);
+//         res.status(500).json({ message: 'Server error' });
+//     }
+// });
+
+
+
+
+// ✅ Base path is '/api/documents'
 router.get('/:id', verifyToken, async (req, res) => {
     try {
         const document = await Document.findById(req.params.id);
         if (!document) {
             return res.status(404).json({ message: 'Document not found' });
         }
-        // if (document.owner.toString() !== req.user.id) {
-        //     return res.status(403).json({ message: 'Not authorized' });
-        // }
         res.json(document);
     } catch (error) {
-        console.error('Error fetching document:', error);
+        console.error('Error fetching document:', error); // Log for debug
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 // Create a new document
 router.post('/', verifyToken, async (req, res) => {
