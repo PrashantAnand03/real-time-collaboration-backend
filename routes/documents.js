@@ -36,7 +36,7 @@ router.get('/', verifyToken, async (req, res) => {
 
 
 // Base path is '/api/documents'
-router.get('/api/documents/:id', verifyToken, async (req, res) => {
+router.get('/:id', verifyToken, async (req, res) => {
     try {
         const document = await Document.findById(req.params.id);
         if (!document) {
