@@ -64,20 +64,34 @@ app.use(cors(corsOptions));
 // });
 
 
+// const io = new Server(server, {
+//   cors: {
+//     origin: (origin, callback) => {
+//       console.log('Origin:', origin);  // Add logging here for debugging
+//       if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
+//         return callback(null, true);
+//       }
+//       callback(new Error('Not allowed by CORS'));
+//     },
+//     methods: ['GET', 'POST'],
+//   }
+// });
+
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      console.log('Origin:', origin);  // Add logging here for debugging
+      console.log('Origin:', origin);
       if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
         return callback(null, true);
       }
       callback(new Error('Not allowed by CORS'));
     },
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }
 });
 
-// app.set('io', io);
+app.set('io', io); // Attach io to app
+
 
 
 
