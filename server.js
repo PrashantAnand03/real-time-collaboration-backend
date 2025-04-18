@@ -13,8 +13,8 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
+// For localhost
 // const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:3000'; // Default to localhost if not set in .env
-
 // // Configure CORS for HTTP requests
 // app.use(cors({
 //     origin: corsOrigin, // Dynamically set the origin
@@ -46,37 +46,6 @@ const allowedOrigins = [
   // Express CORS
 app.use(cors(corsOptions));
 
-// Socket.io setup for real-time collaboration
-// const io = new Server(server, {
-//   cors: {
-//     origin: function (origin, callback) {
-//       if (
-//         !origin || 
-//         allowedOrigins.includes(origin) || 
-//         vercelPreviewPattern.test(origin)
-//       ) {
-//         return callback(null, true);
-//       }
-//       callback(new Error('Not allowed by CORS'));
-//     },
-//     methods: ['GET', 'POST'],
-//   }
-// });
-
-
-// const io = new Server(server, {
-//   cors: {
-//     origin: (origin, callback) => {
-//       console.log('Origin:', origin);  // Add logging here for debugging
-//       if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
-//         return callback(null, true);
-//       }
-//       callback(new Error('Not allowed by CORS'));
-//     },
-//     methods: ['GET', 'POST'],
-//   }
-// });
-
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
@@ -93,28 +62,11 @@ const io = new Server(server, {
 app.set('io', io); // Attach io to app
 
 
-
-
-// // Socket.io setup for real-time collaboration
+// // Socket.io setup for real-time collaboration For localhost
 // const io = new Server(server, {
 //     cors: {
 //         origin: process.env.FRONTEND_URL, // Dynamically set the origin for socket.io
 //         methods: ['GET', 'POST']
-//     }
-// });
-
-
-// // Socket.io CORS
-// const io = new Server(server, {
-//     cors: corsOptions,
-//   });
-
-// Socket.io CORS
-// const io = require('socket.io')(server, {
-//     cors: {
-//         origin: process.env.FRONTEND_URL, // Use env variable
-//         methods: ['GET', 'POST'],
-//         credentials: true
 //     }
 // });
 
@@ -159,5 +111,5 @@ server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-
+// when deployment is done on Serverless platform like Amazon EC2
 // module.exports.handler = serverless(app); 
